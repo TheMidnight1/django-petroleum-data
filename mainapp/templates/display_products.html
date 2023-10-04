@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Petroleum Data Table</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+        margin: 0;
+        padding: 0;
+      }
+
+      h1 {
+        background-color: #007bff;
+        color: #fff;
+        text-align: center;
+        padding: 20px;
+      }
+
+      table {
+        width: 80%;
+        margin: 20px auto;
+        border-collapse: collapse;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        background-color: #fff;
+      }
+
+      th,
+      td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+      }
+
+      th {
+        background-color: #007bff;
+        color: #fff;
+      }
+
+      tr:nth-child(even) {
+        background-color: #f2f2f2;
+      }
+
+      tr:hover {
+        background-color: #f0e6eb;
+      }
+      .maindiv {
+        display: flex;
+      }
+      .data-table {
+        flex-grow: 2;
+      }
+      .left-div {
+        display: flex;
+      }
+      .inner-left-div {
+        display: flex;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="maindiv">
+      <div class="data-table">
+        <h1>Petroleum Data</h1>
+        <table>
+          <thead>
+            <tr>
+              <th>Year</th>
+              <th>Petroleum Product</th>
+              <th>Sale</th>
+              <th>Country</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in data %}
+            <tr>
+              <td>{{ item.year }}</td>
+              <td>{{ item.petroleum_product }}</td>
+              <td>{{ item.sale }}</td>
+              <td>{{ item.country }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="left-div">
+        <div class="inner-left-div">
+          <div>
+            <h1>Total Sales</h1>
+            <table>
+              <thead>
+                <tr>
+                  <th>Petroleum Product</th>
+                  <th>Total sale</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in total_sales %}
+                <tr>
+                  <td>{{ item.petroleum_product }}</td>
+                  <td>{{ item.total_sale }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <div>
+            <h1>Lowest</h1>
+            <table>
+              <thead>
+                <tr>
+                  <th>Lowest</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in bottom_countries%}
+                <tr>
+                  <td>{{ item.country }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <div>
+            <h1>Highest</h1>
+            <table>
+              <thead>
+                <tr>
+                  <th>Highest</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in top_countries%}
+                <tr>
+                  <td>{{ item.country }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div>
+          <h1>Average Data</h1>
+          <table>
+            <thead>
+              <tr>
+                <th>Petroleum Product</th>
+                <th>Year</th>
+                <th>Petroleum Product</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in average_sales %}
+              <tr>
+                <td>{{ item.Product }}</td>
+                <td>{{item.Year}}</td>
+                <td>{{ item.Avg }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
