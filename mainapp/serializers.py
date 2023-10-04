@@ -5,3 +5,4 @@ class PetroleumDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = PetroleumData
         fields = '__all__'
+

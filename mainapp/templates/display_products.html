@@ -9,6 +9,7 @@
         background-color: #f5f5f5;
         margin: 0;
         padding: 0;
+        padding: 0rem 4rem;
       }
 
       h1 {
@@ -53,9 +54,14 @@
       }
       .left-div {
         display: flex;
+        flex-direction: column;
       }
       .inner-left-div {
         display: flex;
+      }
+      .all-data-table {
+        overflow: auto;
+        max-height: 67rem;
       }
     </style>
   </head>
@@ -63,26 +69,28 @@
     <div class="maindiv">
       <div class="data-table">
         <h1>Petroleum Data</h1>
-        <table>
-          <thead>
-            <tr>
-              <th>Year</th>
-              <th>Petroleum Product</th>
-              <th>Sale</th>
-              <th>Country</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for item in data %}
-            <tr>
-              <td>{{ item.year }}</td>
-              <td>{{ item.petroleum_product }}</td>
-              <td>{{ item.sale }}</td>
-              <td>{{ item.country }}</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
+        <div class="all-data-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Year</th>
+                <th>Petroleum Product</th>
+                <th>Sale</th>
+                <th>Country</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in data %}
+              <tr>
+                <td>{{ item.year }}</td>
+                <td>{{ item.petroleum_product }}</td>
+                <td>{{ item.sale }}</td>
+                <td>{{ item.country }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <div class="left-div">
@@ -141,6 +149,7 @@
             </table>
           </div>
         </div>
+
         <div>
           <h1>Average Data</h1>
           <table>

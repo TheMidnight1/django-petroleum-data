@@ -1,17 +1,14 @@
-from django.shortcuts import render
-from rest_framework.views import APIView
-from rest_framework.response import Response
 import requests
-from django.db import transaction
-
-from .serializers import PetroleumDataSerializer
-from .models import PetroleumData 
 from django.db.models import Sum
+from .models import PetroleumData 
+from django.db import transaction
+from django.shortcuts import render
+from rest_framework import viewsets
+from rest_framework.views import APIView
+from rest_framework.decorators import action
+from rest_framework.response import Response
 from django.db.models.functions import Coalesce
-from django.db.models import Avg, F, ExpressionWrapper, DurationField
-from django.db.models.functions import TruncYear ,Cast
-from django.db.models import Q
-
+from .serializers import PetroleumDataSerializer
 from django.db.models import Avg, ExpressionWrapper, F, IntegerField
 
 class PetroleumDataView(APIView):
@@ -44,6 +41,7 @@ class PetroleumDataView(APIView):
         
 class DisplayPetroleumDataView(APIView):
     def get(self, request):
+        
         data = PetroleumData.objects.all()
         
         total_sales = PetroleumData.objects.values('petroleum_product').annotate(
@@ -56,7 +54,8 @@ class DisplayPetroleumDataView(APIView):
 
         top_countries = total_sales_by_country[:3]
 
-        bottom_countries = total_sales_by_country[len(total_sales_by_country) - 3:] 
+        # bottom_countries = total_sales_by_country[len(total_sales_by_country) - 3:] 
+        bottom_countries = total_sales_by_country[::-1][:3]
         
         avg_data = PetroleumData.objects.exclude(sale=0)
 
@@ -103,5 +102,7 @@ class DisplayPetroleumDataView(APIView):
                 'Avg': total_sale / (end_year - start_year + 1)
             })
         serializer = PetroleumDataSerializer(data, many=True)
-        context = {"data": serializer.data , "total_sales":total_sales,"top_countries":top_countries, "bottom_countries":bottom_countries,"average_sales":formatted_average_salesc}
+        context = {"data": serializer.data , "total_sales":total_sales,"top_countries":top_countries, "bottom_countries":bottom_countries,"average_sales":formatted_average_sales}
         return render(request, "display_products.html", context)
+    
+    

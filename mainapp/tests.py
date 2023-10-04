@@ -1,50 +1,41 @@
 from django.test import TestCase
-
-# mainapp/tests.py
-
-from django.test import TestCase
+from django.urls import reverse
 from .models import PetroleumData
 
-class PetroleumDataTestCase(TestCase):
+from rest_framework.test import APITestCase
+
+class UrlTests(TestCase):
+    def test_petroleum_data_url(self):
+        response = self.client.get(reverse("mainapp:show"))
+        self.assertEqual(response.status_code, 200) 
+
+    def test_display_petroleum_data_url(self):
+        response = self.client.get(reverse("mainapp:display-petroleum-data"))
+        self.assertEqual(response.status_code, 200)  
+
+
+class PetroleumDataModelTest(TestCase):
     def setUp(self):
-        # Create test data
-        self.data1 = PetroleumData.objects.create(
-            year='2023',
-            petroleum_product='Petrol',
-            sale=1000,
-            country='USA'
-        )
-        self.data2 = PetroleumData.objects.create(
-            year='2023',
-            petroleum_product='Diesel',
-            sale=1500,
-            country='Canada'
-        )
+        self.data = {
+            "year": "2023",
+            "petroleum_product": "Oil",
+            "sale": 1000,
+            "country": "USA"
+        }
 
-    def test_petroleum_data_str(self):
-        # Test the __str__ method of the PetroleumData model
-        self.assertEqual(str(self.data1), '2023 - Petrol (USA)')
-        self.assertEqual(str(self.data2), '2023 - Diesel (Canada)')
+    def test_petroleum_data_model_creation(self):
+        petroleum_data = PetroleumData(**self.data)
+        petroleum_data.save()
+        self.assertEqual(PetroleumData.objects.count(), 1)
+        saved_data = PetroleumData.objects.get(year="2023")
+        self.assertEqual(saved_data.petroleum_product, "Oil")
+        self.assertEqual(saved_data.sale, 1000)
+        self.assertEqual(saved_data.country, "USA")
 
-    def test_sales_total(self):
-        # Test the total sales calculation for a specific year and product
-        year = '2023'
-        product = 'Petrol'
-        total_sales = PetroleumData.total_sales(year, product)
-        self.assertEqual(total_sales, 1000)
-
-    def test_sales_average(self):
-        # Test the average sales calculation for a specific product
-        product = 'Petrol'
-        average_sales = PetroleumData.average_sales(product)
-        self.assertEqual(average_sales, 1000)
-
-    def test_sales_by_country(self):
-        # Test the total sales by country for a specific year and product
-        year = '2023'
-        product = 'Diesel'
-        sales_by_country = PetroleumData.sales_by_country(year, product)
-        self.assertEqual(sales_by_country['Canada'], 1500)
-        self.assertEqual(sales_by_country.get('USA'), None)
-
-    # Add more test cases as needed
+class PetroleumDataViewTest(APITestCase):
+    def test_petroleum_data_view(self):
+        url = "https://raw.githubusercontent.com/younginnovations/internship-challenges/master/programming/petroleum-report/data.json"
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, {"message": "All data are shown"})
+        self.assertEqual(PetroleumData.objects.count(), 0)
