@@ -1,8 +1,7 @@
 from django.urls import path,include
-from .views import PetroleumDataView,DisplayPetroleumDataView
+from .views import DisplayPetroleumDataView
 app_name = "mainapp"
 urlpatterns = [
-    path('petroleum-data/',PetroleumDataView.as_view(), name="show"),
-    path('display-petroleum-data/', DisplayPetroleumDataView.as_view(), name="display-petroleum-data"),
+    path('', DisplayPetroleumDataView.as_view(), name="display-petroleum-data"),
     
 ]

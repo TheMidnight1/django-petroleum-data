@@ -11,34 +11,6 @@ from django.db.models.functions import Coalesce
 from .serializers import PetroleumDataSerializer
 from django.db.models import Avg, ExpressionWrapper, F, IntegerField
 
-class PetroleumDataView(APIView):
-    @transaction.atomic
-    def get(self, request):
-        url = "https://raw.githubusercontent.com/younginnovations/internship-challenges/master/programming/petroleum-report/data.json"
-
-        try:
-            response = requests.get(url)
-            response.raise_for_status()
-            data = response.json()
-
-            data_objects = []
-
-            for item in data:
-                data_objects.append(
-                    PetroleumData(
-                        year=item["year"],
-                        petroleum_product=item["petroleum_product"],
-                        sale=item["sale"],
-                        country=item["country"]
-                    )
-                )
-
-            PetroleumData.objects.bulk_create(data_objects)
-
-            return Response({"message": "Data saved to the database."})
-        except requests.exceptions.RequestException as e:
-            return Response({"error": str(e)}, status=500)
-        
 class DisplayPetroleumDataView(APIView):
     def get(self, request):
         
