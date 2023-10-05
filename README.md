@@ -23,12 +23,11 @@ $ python manage.py test
 
 ## Todos
 
-- [x] Implement cli for database seed/reset
-- [x] Add a way to use from cli
 - [ ] Implement api and api keys for consumers to use api
-- [ ] Think and implement more...
 
 ## deployment
 
-I'm using fly.io for deployment. To deploy it on fly.io just run:
-$ fly
+I'm using render for deployment. To deploy it on render.com:
+
+- Create and connect your github account
+- CLick deploy
