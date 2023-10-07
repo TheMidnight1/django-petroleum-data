@@ -21,11 +21,7 @@ A mini project that shows [add_description](:-)
 To run the tests, run:
 $ python manage.py test
 
-## Todos
-
-- [ ] Implement api and api keys for consumers to use api
-
-## deployment
+## Deployment
 
 I'm using render for deployment. To deploy it on render.com:
 

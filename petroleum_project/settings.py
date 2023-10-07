@@ -31,7 +31,9 @@ SECRET_KEY = 'django-insecure-^oc3-*a03f4yn17i7&os74%#zx_k5=r7r-y=e-xo@dhm8qm902
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['petroleum-data.onrender.com']
+# ALLOWED_HOSTS = ['petroleum-data.onrender.com',]
+ALLOWED_HOSTS = ['*',]
+
 
 
 # Application definition

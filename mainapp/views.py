@@ -1,15 +1,10 @@
-import requests
 from django.db.models import Sum
 from .models import PetroleumData 
-from django.db import transaction
 from django.shortcuts import render
-from rest_framework import viewsets
 from rest_framework.views import APIView
-from rest_framework.decorators import action
-from rest_framework.response import Response
 from django.db.models.functions import Coalesce
 from .serializers import PetroleumDataSerializer
-from django.db.models import Avg, ExpressionWrapper, F, IntegerField
+
 
 class DisplayPetroleumDataView(APIView):
     def get(self, request):
@@ -26,55 +21,49 @@ class DisplayPetroleumDataView(APIView):
 
         top_countries = total_sales_by_country[:3]
 
-        # bottom_countries = total_sales_by_country[len(total_sales_by_country) - 3:] 
         bottom_countries = total_sales_by_country[::-1][:3]
-        
-        avg_data = PetroleumData.objects.exclude(sale=0)
 
-        # Calculate the average sale for each petroleum product over a 4-year interval
-        average_sales = (
-            avg_data.annotate(year_integer=ExpressionWrapper(
-                F('year'), output_field=IntegerField()
-            ))
-            .annotate(year_mod=F('year_integer') % 4)
-            .filter(year_mod=0)
-            .values('petroleum_product', 'year_integer')
-            .annotate(avg_sale=Avg('sale'))
-            .order_by('petroleum_product', 'year_integer')
-        )
+        # Filter the data for the year range 2007-2010 and calculate the average sale
+        filtered_data_2007_2010 = [
+            item for item in data
+            if "2007" <= item.year <= "2010" and item.sale != 0
+        ]
 
-        # Prepare the data for rendering in the desired format
-        formatted_average_sales = []
-        current_product = None
-        start_year = None
-        end_year = None
-        total_sale = 0
-
-        for item in average_sales:
-            if item['petroleum_product'] != current_product:
-                if current_product is not None:
-                    formatted_average_sales.append({
-                        'Product': current_product,
-                        'Year': f'{start_year}-{end_year}',
-                        'Avg': total_sale / (end_year - start_year + 1)
-                    })
-                current_product = item['petroleum_product']
-                start_year = item['year_integer']
-                end_year = item['year_integer']
-                total_sale = item['avg_sale']
+        result_2007_2010 = {}
+        for item in filtered_data_2007_2010:
+            key = f"{item.petroleum_product} - 2007-2010"
+            if key not in result_2007_2010:
+                result_2007_2010[key] = {
+                    "Product": item.petroleum_product,
+                    "Year": "2007-2010",
+                    "Avg": item.sale,
+                }
             else:
-                end_year = item['year_integer']
-                total_sale += item['avg_sale']
+                result_2007_2010[key]["Avg"] += item.sale
 
-        # Add the last entry
-        if current_product is not None:
-            formatted_average_sales.append({
-                'Product': current_product,
-                'Year': f'{start_year}-{end_year}',
-                'Avg': total_sale / (end_year - start_year + 1)
-            })
+        # Filter the data for the year range 2011-2014 and calculate the average sale
+        filtered_data_2011_2014 = [
+            item for item in data
+            if "2011" <= item.year <= "2014" and item.sale != 0
+        ]
+
+        result_2011_2014 = {}
+        for item in filtered_data_2011_2014:
+            key = f"{item.petroleum_product} - 2011-2014"
+            if key not in result_2011_2014:
+                result_2011_2014[key] = {
+                    "Product": item.petroleum_product,
+                    "Year": "2011-2014",
+                    "Avg": item.sale,
+                }
+            else:
+                result_2011_2014[key]["Avg"] += item.sale
+
+        # Combine the results for both year ranges
+        average_sales = list(result_2007_2010.values()) + list(result_2011_2014.values())
+
         serializer = PetroleumDataSerializer(data, many=True)
-        context = {"data": serializer.data , "total_sales":total_sales,"top_countries":top_countries, "bottom_countries":bottom_countries,"average_sales":formatted_average_sales}
+        context = {"data": serializer.data , "total_sales":total_sales,"top_countries":top_countries, "bottom_countries":bottom_countries,"average_sales":average_sales}
         return render(request, "display_products.html", context)
     
     
